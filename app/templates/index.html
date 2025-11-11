@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% block title%}  SimPubli - Contas Públicas SP{% endblock %}
+{% block content %}
+{% load l10n %}
+<section class="our-achievement section" style="padding-top: 180px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1 col-md-12 col-12">
+                    <div class="title">
+                        <h2>SÃO PAULO</h2>
+                        <p>O Estado de São Paulo em Números.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 col-md-12 col-12">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span>{{ registro_json.est_populacao_total }}</span> <span style="font-size:20px;"> Habitantes</span></h3>
+                                <p>População Total</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span >{{ registro_json.est_populacao_total_int }}</span> <span style="font-size:20px;"> Habitantes</span></h3>
+                                <p>População Total no Interior</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span>{{ registro_json.est_populacao_total_cap }}</span> <span style="font-size:20px;"> Habitantes</span></h3>
+                                <p>População Total na Capital</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span>{{ registro_json.est_num_municipios }}</span> <span style="font-size:20px;"> Municípios</span></h3>
+                                <p>Número de Municípios</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                
+                                <h3 class="counter"><span style="font-size:20px;"> R$</span><span>{{ registro_json.est_receita_total|floatformat:2 }}</span></h3>
+                                <p>Total de Receitas Arrecadadas pelos Municípios do Estado*</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter"><span style="font-size:20px;"> R$</span><span>{{ registro_json.est_despesa_total|floatformat:2 }}</span></h3>
+                                <p>Total de Despesas Empenhadas pelos Municípios do Estado*</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    </section>
+
+  {% if registro_json.est_municipios_populacao %}
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">População</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Municípios do Estado de São Paulo</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Lista dos Municípios do Estado por população estimada (Dados IBGE).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-cidades">
+                <thead>
+                  <tr>
+                    <th scope="col">Posição</th>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">População</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in registro_json.est_municipios_populacao %}
+                  <tr>
+                    <td>{{ item.posicao }}</td>
+                    <td>{{ item.nome }}</td>
+                    <td>{{ item.populacao }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+    {% else %}
+        <p>Não há municípios para exibir.</p>
+    {% endif %}
+
+    {% if registro_json.est_maiores_receitas %}
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Receitas</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Municípios do Estado de São Paulo</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">As 20 maiores receitas municipais arrecadas do Estado de São Paulo (Dados Audesp)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">Valor R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in registro_json.est_maiores_receitas %}
+                  <tr>
+                    <td>{{ item.ds_municipio }}</td>
+                    <td>R$ {{ item.mun_soma_receitas_desc|floatformat:2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+    {% else %}
+        <p>Não há municípios para exibir.</p>
+    {% endif %}
+
+    {% if registro_json.est_menores_receitas %}
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Receitas</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Municípios do Estado de São Paulo</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">As 20 menores receitas municipais arrecadas do Estado de São Paulo (Dados Audesp)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">Valor R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in registro_json.est_menores_receitas %}
+                  <tr>
+                    <td>{{ item.ds_municipio }}</td>
+                    <td>R$ {{ item.mun_soma_receitas|floatformat:2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+    {% else %}
+        <p>Não há municípios para exibir.</p>
+    {% endif %}
+
+    {% if registro_json.est_maiores_despesas %}
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Municípios do Estado de São Paulo</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">As 20 maiores despesas municipais do Estado de São Paulo (Despesas Empenhadas - Dados Audesp)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">Valor R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in registro_json.est_maiores_despesas %}
+                  <tr>
+                    <td>{{ item.ds_municipio }}</td>
+                    <td>R$ {{ item.mun_soma_despesas_desc|floatformat:2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+    {% else %}
+        <p>Não há municípios para exibir.</p>
+    {% endif %}
+
+    {% if registro_json.est_menores_despesas %}
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Municípios do Estado de São Paulo</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">As 20 menores despesas municipais do Estado de São Paulo (Despesas Empenhadas - Dados Audesp)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">Valor R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in registro_json.est_menores_despesas %}
+                  <tr>
+                    <td>{{ item.ds_municipio }}</td>
+                    <td>R$ {{ item.mun_soma_despesas|floatformat:2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+
+        <h5 class="mt-120 section-title"><p>*O município de São Paulo não possui dados de prestação de contas no site da Audesp, por esse motivo não entra no cálculo de Despesas e Receitas</p></h5>
+      </section>
+      {% else %}
+        <p>Não há municípios para exibir.</p>
+      {% endif %}
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+    $('#table-cidades').dataTable();
+});
+</script>
+{% endblock %}
+
+{% endblock  %}
