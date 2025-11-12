@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% block title %}
+  Pesquisar Município - SimPubli
+{% endblock %}
+{% block content %}
+  {% load mathfilters %}
+  <section class="our-achievement section" style="padding: 60px!important;">
+    <div class="container"></div>
+  </section>
+  <section id="features" class="features section" style="padding-top: 10px; padding-bottom: 10px;">
+    <div class="container">
+      <div class="row">
+        <div class="section-title">
+          <h4>Pesquisar Município</h4>
+        </div>
+        <form method="post" action="{% url 'comparar' %}" style="margin-top: 30px;">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-12">
+              <div class="form-group section-title">
+                <select id="sel-municipio-1" name="municipio1" class="form-control" required>
+                  <option value="" disabled selected>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp***** Escolha o 1° Município *****&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                  {% for municipio in todos_municipios %}
+                    <option value="{{ municipio.id_ibge|stringformat:'s' }}">{{ municipio.json.nome }}</option>
+                  {% endfor %}
+                </select>
+
+                 <select id="sel-municipio-2" name="municipio2" class="form-control" required>
+                  <option value="" disabled selected>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp***** Escolha o 2° Município *****&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                  {% for municipio in todos_municipios %}
+                    <option value="{{ municipio.id_ibge|stringformat:'s' }}">{{ municipio.json.nome }}</option>
+                  {% endfor %}
+                </select>
+                <span class="input-group-btn"><button type="submit" class="btn btn-danger">Comparar</button></span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  {% if resultados_json_1 and resultados_json_2 %}
+  <section class="features section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h3 class="wow zoomIn" data-wow-delay=".2s">Comparação de Dados</h3>
+                    <h4 class="wow fadeInUp" data-wow-delay=".4s">{{ resultados_json_1.nome }} | {{ resultados_json_2.nome }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col" colspan="2" class="text-center" style="background-color:#f0f0f0">{{ resultados_json_1.nome }}</th>
+                <th scope="col" colspan="2" class="text-center">{{ resultados_json_2.nome }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="background-color:#f0f0f0">População</td>
+                <td style="background-color:#f0f0f0">{{ resultados_json_1.populacao }}</td>
+                <td>População</td>
+                <td>{{ resultados_json_2.populacao }}</td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Posição n° Habitantes</td>
+                <td style="background-color:#f0f0f0">{{ resultados_json_1.posicao_populacao }}°</td>
+                <td>Posição n° Habitantes</td>
+                <td>{{ resultados_json_2.posicao_populacao }}°</td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Receita arrecadada 2025</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.rec_total %}
+                    {{ item.arrecadacao|floatformat:2 }}
+                  {% endfor %}
+                </td>
+                <td>Receita arrecadada 2025</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.rec_total %}
+                    {{ item.arrecadacao|floatformat:2 }}
+                  {% endfor %}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Despesas Empenhadas em 2025</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.desp_total %}
+                    {% if item.tipo_despesa == 'Empenhado' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>Despesas Empenhadas em 2025</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.desp_total %}
+                    {% if item.tipo_despesa == 'Empenhado' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Despesas Liquidadas em 2025</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.desp_total %}
+                    {% if item.tipo_despesa == 'Valor Liquidado' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>Despesas Liquidadas em 2025</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.desp_total %}
+                    {% if item.tipo_despesa == 'Valor Liquidado' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Despesas Pagas em 2025</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.desp_total %}
+                    {% if item.tipo_despesa == 'Valor Pago' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>Despesas Pagas em 2025</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.desp_total %}
+                    {% if item.tipo_despesa == 'Valor Pago' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Despesas Anuladas em 2025</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.desp_total %}
+                    {% if item.tipo_despesa == 'Anulação' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>Despesas Anuladas em 2025</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.desp_total %}
+                    {% if item.tipo_despesa == 'Anulação' %}
+                      {{ item.despesa|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Valor Receita por Habitante</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.rec_total %}
+                    {{ item.arrecadacao|div:resultados_json_1.populacao|floatformat:2 }}
+                  {% endfor %}
+                </td>
+                <td>Valor Receita por Habitante</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.rec_total %}
+                    {{ item.arrecadacao|div:resultados_json_2.populacao|floatformat:2 }}
+                  {% endfor %}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="background-color:#f0f0f0">Despesas Empenhadas por Habitante</td>
+                <td style="background-color:#f0f0f0">R$ 
+                  {% for item in resultados_json_1.desp_total %}
+                    {% if item.tipo_despesa == 'Empenhado' %}
+                      {{ item.despesa|div:resultados_json_1.populacao|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>Despesas Empenhadas por Habitante</td>
+                <td>R$ 
+                  {% for item in resultados_json_2.desp_total %}
+                    {% if item.tipo_despesa == 'Empenhado' %}
+                      {{ item.despesa|div:resultados_json_2.populacao|floatformat:2 }}
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+  {% block scripts %}
+    <script>
+      $(document).ready(function () {
+        $('#sel-municipio-1').select2({
+          theme: 'bootstrap-5'
+        })
+
+        $('#sel-municipio-2').select2({
+          theme: 'bootstrap-5'
+        })
+      })
+    </script>
+  {% endblock %}
+{% endblock %}

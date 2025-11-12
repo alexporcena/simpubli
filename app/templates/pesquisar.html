@@ -1,0 +1,834 @@
+{% extends 'base.html' %}
+{% block title %}
+  Pesquisar Município - SimPubli
+{% endblock %}
+{% block content %}
+{% load mathfilters %}
+ <section class="our-achievement section" style="padding: 60px!important;">
+        <div class="container">
+            
+        </div>
+</section>
+    <section id="features" class="features section" style="padding-top: 10px; padding-bottom: 10px;">
+        <div class="container">
+            <div class="row">
+                <div class="section-title">
+                    <h4>Pesquisar Município</h4>
+                </div>
+                <form method="get" action="{% url 'pesquisar' %}" style="margin-top: 30px;">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="form-group section-title">
+                                <select id="sel-municipio" name="municipio" class="form-control" required>
+                                    <option value="" disabled selected>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp***** Escolha um município *****&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                                        {% for municipio in todos_municipios %}
+                                            <option value="{{ municipio.id_ibge|stringformat:'s' }}">
+                                                {{ municipio.json.nome }}
+                                            </option>
+                                        {% endfor %}
+                                </select>
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-danger">Buscar</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <section  class="features section" style="padding-top: 0px; padding-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="section-title">
+                    {% if municipio_encontrado %}
+                        <h2>{{ municipio_encontrado.json.nome }}</h2>
+                        
+                    {% else %}
+                        <h4>Nenhum município selecionado.</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if municipio_encontrado %}
+    <section class="our-achievement section" style="padding-top: 20px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 col-md-12 col-12">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span>{{ resultados_json.populacao }}</span> <span style="font-size:20px;"> Habitantes</span></h3>
+                                <p>População Total</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span >{{ resultados_json.posicao_populacao }}</span> <span style="font-size:20px;">°</span></h3>
+                                <p>Posição no Estado em número de habitantes</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3><span style="font-size:20px;">R$ </span> <span>
+                                    {% for item in resultados_json.rec_total %}
+                                        {{ item.arrecadacao|floatformat:2 }}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Receita Total arrecadada em 2025</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span style="font-size:20px;"> R$ </span> <span>
+                                    {% for item in resultados_json.desp_total %}
+                                        {% if item.tipo_despesa == 'Empenhado' %}
+                                        {{ item.despesa|floatformat:2 }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Despesas Empenhadas em 2025</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span style="font-size:20px;"> R$ </span> <span>
+                                    {% for item in resultados_json.desp_total %}
+                                        {% if item.tipo_despesa == 'Valor Liquidado' %}
+                                        {{ item.despesa|floatformat:2 }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Despesas Liquidadas em 2025</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span style="font-size:20px;"> R$ </span> <span>
+                                    {% for item in resultados_json.desp_total %}
+                                        {% if item.tipo_despesa == 'Valor Pago' %}
+                                        {{ item.despesa|floatformat:2 }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Despesas Pagas em 2025</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span style="font-size:20px;"> R$ </span> <span>
+                                    {% for item in resultados_json.desp_total %}
+                                        {% if item.tipo_despesa == 'Anulação' %}
+                                        {{ item.despesa|floatformat:2 }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Despesas Anuladas em 2025</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span style="font-size:20px;"> R$ </span> <span>
+                                     {% for item in resultados_json.rec_total %}
+                                        {{ item.arrecadacao|div:resultados_json.populacao|floatformat:2 }}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Valor Receita por Habitante</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="single-achievement wow fadeInUp" data-wow-delay=".6s">
+                                <h3 class="counter" ><span style="font-size:20px;"> R$ </span> <span>
+                                    {% for item in resultados_json.desp_total %}
+                                        {% if item.tipo_despesa == 'Empenhado' %}
+                                        {{ item.despesa|div:resultados_json.populacao|floatformat:2 }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span></h3>
+                                <p>Despesas Empenhadas por Habitante</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Receitas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Receitas por Mês de Referência</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Mês</th>
+                    <th scope="col">Valor Arrecadado em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.rec_mes_referencia %}
+                  <tr>
+                    <td>{{ item.mes_ref_extenso }}</td>
+                    <td>R$ {{ item.arrecadacao }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Receitas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Receitas por Fonte de Recurso</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Fonte de Recurso</th>
+                    <th scope="col">Valor Arrecadado em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.rec_fonte_recurso %}
+                  <tr>
+                    <td>{{ item.ds_fonte_recurso }}</td>
+                    <td>R$ {{ item.arrecadacao }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Receitas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Receitas por Tipo de Recurso</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-rec-tipo">
+                <thead>
+                  <tr>
+                    <th scope="col">Tipo de Recurso</th>
+                    <th scope="col">Valor Arrecadado em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.rec_tipo_recurso %}
+                  <tr>
+                    <td>{{ item.ds_tipo }}</td>
+                    <td>R$ {{ item.arrecadacao }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Receitas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Receitas por Fonte Contábil</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Fonte Contábil</th>
+                    <th scope="col">Valor Arrecadado em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.rec_fonte_orcamentaria %}
+                  <tr>
+                    <td>{{ item.fonte_contabil }}</td>
+                    <td>R$ {{ item.arrecadacao }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Empenhadas por Orgão</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Orgão</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_orgao %}
+                  {% if item.tipo_despesa == "Empenhado" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Liquidadas por Orgão</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Orgão</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_orgao %}
+                  {% if item.tipo_despesa == "Valor Liquidado" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Pagas por Orgão</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Orgão</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_orgao %}
+                  {% if item.tipo_despesa == "Valor Pago" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Anuladas por Orgão</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Orgão</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_orgao %}
+                  {% if item.tipo_despesa == "Anulação" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Valor Empenhado por Fornecedor</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-fornecedores">
+                <thead>
+                  <tr>
+                    <th scope="col">Fornecedor</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_descricao %}
+                  {% if item.tipo_despesa == "Empenhado" %}
+                  <tr>
+                    <td>{{ item.descricao_despesa }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Valor Liquidado por Fornecedor</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-fornecedores-liq">
+                <thead>
+                  <tr>
+                    <th scope="col">Fornecedor</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_descricao %}
+                  {% if item.tipo_despesa == "Valor Liquidado" %}
+                  <tr>
+                    <td>{{ item.descricao_despesa }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+        <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Valor Pago por Fornecedor</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-fornecedores-pago">
+                <thead>
+                  <tr>
+                    <th scope="col">Fornecedor</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_descricao %}
+                  {% if item.tipo_despesa == "Valor Pago" %}
+                  <tr>
+                    <td>{{ item.descricao_despesa }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+        <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Valor Anulado por Fornecedor</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-fornecedores-anu">
+                <thead>
+                  <tr>
+                    <th scope="col">Fornecedor</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_descricao %}
+                  {% if item.tipo_despesa == "Anulação" %}
+                  <tr>
+                    <td>{{ item.descricao_despesa }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Empenhadas por Função do Governo</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-func-gov-e">
+                <thead>
+                  <tr>
+                    <th scope="col">Função do Governo</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_funcao_gov %}
+                  {% if item.tipo_despesa == "Empenhado" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Liquidadas por Função do Governo</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-func-gov-l">
+                <thead>
+                  <tr>
+                    <th scope="col">Função do Governo</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_funcao_gov %}
+                  {% if item.tipo_despesa == "Valor Liquidado" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Pagas por Função do Governo</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-func-gov-p">
+                <thead>
+                  <tr>
+                    <th scope="col">Função do Governo</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_funcao_gov %}
+                  {% if item.tipo_despesa == "Valor Pago" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Anuladas por Função do Governo</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="display dataTable" id="table-func-gov-a">
+                <thead>
+                  <tr>
+                    <th scope="col">Função do Governo</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_funcao_gov %}
+                  {% if item.tipo_despesa == "Anulação" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Empenhadas por Modalidade de Licitação</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Modalidade de Licitação</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_modalidade %}
+                  {% if item.tipo_despesa == "Empenhado" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Liquidadas por Modalidade de Licitação</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Modalidade de Licitação</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_modalidade %}
+                  {% if item.tipo_despesa == "Valor Liquidado" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Pagas por Modalidade de Licitação</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Modalidade de Licitação</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_modalidade %}
+                  {% if item.tipo_despesa == "Valor Pago" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="features section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Despesas</h3>
+                        <h4 class="wow fadeInUp" data-wow-delay=".4s">Despesas Anuladas por Modalidade de Licitação</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Modalidade de Licitação</th>
+                    <th scope="col">Valor em R$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in resultados_json.desp_modalidade %}
+                  {% if item.tipo_despesa == "Anulação" %}
+                  <tr>
+                    <td>{{ item.ds_orgao }}</td>
+                    <td>R$ {{ item.despesa|floatformat:2 }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </section>
+
+    {% endif %}
+
+    {% block scripts %}
+    <script>
+        $(document).ready(function() {
+            $('#sel-municipio').select2({
+                theme: 'bootstrap-5',
+            });
+            
+            $('#table-rec-tipo').dataTable();
+            $('#table-fornecedores').dataTable();
+            $('#table-fornecedores-liq').dataTable();
+            $('#table-fornecedores-pago').dataTable();
+            $('#table-fornecedores-anu').dataTable();
+            $('#table-func-gov-e').dataTable();
+            $('#table-func-gov-l').dataTable();
+            $('#table-func-gov-p').dataTable();
+            $('#table-func-gov-a').dataTable();
+        });
+    </script>
+    {% endblock %}
+{% endblock  %}
