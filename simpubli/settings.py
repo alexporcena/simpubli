@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'simpubli_web',       # Nome do banco de dados que você criou
         'USER': 'root',    # Usuário do banco de dados
-        'PASSWORD': 'asp1234',     # Senha do usuário
+        'PASSWORD': '',     # Senha do usuário
         'HOST': 'localhost',        # Ou o IP/nome do host onde o MariaDB está rodando
         'PORT': '3306',             # Porta padrão do MariaDB/MySQL
         'OPTIONS': {
